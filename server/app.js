@@ -79,7 +79,6 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         });
         console.log("Conversion successful, sending file to client...");
 
-        doc.pipe(createWriteStream(done));
         doc.pipe(res);
 
         doc.end();
