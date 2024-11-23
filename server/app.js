@@ -75,8 +75,16 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         unlinkSync(req.file.path);
         return res.status(500).json(err.message);
       }
-      writeFileSync(outputPath, done);
+      // writeFileSync(outputPath, done);
       console.log("Conversion successful, sending file to client...");
+
+      const pdfBuffer = done;
+
+      const base64Pdf = pdfBuffer.toString("base64");
+      res.json({
+        downloadUrl: `data:application/pdf;base64,${base64Pdf}`,
+        fileName: `${req.file.originalname.split(".")[0]}.pdf`,
+      });
 
       // Set the response headers to return a file directly
       // res.set({
@@ -120,10 +128,10 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
       //     res.status(500).send('PDF protection error');
       //   });
       // } else {
-        res.download(outputPath, () => {
-          unlinkSync(req.file.path);
-          unlinkSync(outputPath);
-        });
+        // res.download(outputPath, () => {
+        //   unlinkSync(req.file.path);
+        //   unlinkSync(outputPath);
+        // });
       
       // }
     });

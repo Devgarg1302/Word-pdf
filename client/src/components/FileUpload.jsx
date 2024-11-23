@@ -9,6 +9,7 @@ const FileUpload = () => {
   const [passwordEnabled, setPasswordEnabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [passwordValue, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = async (e) => {
     setErrorMessage("");
@@ -89,26 +90,29 @@ const FileUpload = () => {
     formData.append("password", passwordEnabled);
     formData.append("passwordValue", passwordValue);
 
+    setLoading(true);
+
     try {
 
       const response = await axios.post(
         "https://word-pdf-v08j.onrender.com/convertFile",
         formData,
         {
-          responseType: "blob",
-          headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "multipart/form-data" },
         }
       );
 
-      console.log(response.data);
+      const { downloadUrl, fileName } = response.data;
   
-      // const url = window.URL.createObjectURL(new Blob([response.data]));
-      // const link = document.createElement("a");
-      // link.href = url;
-      // link.setAttribute("download", `${file.name.split(".")[0]}.pdf`);
-      // document.body.appendChild(link);
-      // link.click();
-      // document.body.removeChild(link);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setLoading(false);
+
     } catch (err) {
       console.error("Error uploading file:", err.response?.data || err.message);
       alert("Failed to upload and convert the file.");
@@ -143,9 +147,11 @@ const FileUpload = () => {
           </label>
           </>
         )}
-        <button type="submit">Convert</button>
+        <button type="submit" disabled={loading}>{loading ? "Processing..." : "Convert"}</button>
       </form>
 
+      {loading && <p>Loading... Please wait.</p>}
+      
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
       {metadata.name && (
