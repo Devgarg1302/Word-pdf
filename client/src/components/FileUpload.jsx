@@ -74,7 +74,7 @@ const FileUpload = () => {
       return;
     }
 
-    if(passwordEnabled && !document.getElementById("password")?.value) {
+    if(passwordEnabled && !passwordValue) {
       alert("Please enter a password.");
       return;
     }
@@ -90,7 +90,7 @@ const FileUpload = () => {
     formData.append("passwordValue", passwordValue);
 
     try {
-      const response = await axios.post("http://localhost:3000/convertFile", formData, {
+      const response = await axios.post("https://word-pdf-a24p.onrender.com/convertFile", formData, {
         responseType: "blob", 
         headers: { "Content-Type": "multipart/form-data" },
       });
