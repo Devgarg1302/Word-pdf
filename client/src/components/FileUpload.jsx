@@ -90,8 +90,9 @@ const FileUpload = () => {
     formData.append("passwordValue", passwordValue);
 
     try {
-      const response = await axios.post("https://rune-dashing-switch.glitch.me:3000/convertFile", formData, {
-        responseType: "blob", 
+
+      const response = await axios.post("https://rune-dashing-switch.glitch.me/convertFile", formData, {
+b         responseType: "blob", 
         headers: { "Content-Type": "multipart/form-data" },
       });
 
