@@ -31,11 +31,11 @@ jobs:
     # Step 4: Build and push backend image
     - name: Build and Push Backend Image
       run: |
-        docker build -t devagrg1302/backend-app:latest ./server
+        docker build -t devgarg1302/backend-app:latest ./server
         docker push devgarg1302/backend-app:latest
 
     # Step 5: Build and push frontend image
     - name: Build and Push Frontend Image
       run: |
-        docker build -t devagrg1302/frontend-app:latest ./client
-        docker push decgarg1302/frontend-app:latest
+        docker build -t devgarg1302/frontend-app:latest ./client
+        docker push devgarg1302/frontend-app:latest
