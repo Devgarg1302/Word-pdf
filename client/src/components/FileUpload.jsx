@@ -98,16 +98,15 @@ const FileUpload = () => {
         "https://word-pdf-v08j.onrender.com/convertFile",
         formData,
         {
-          responseType: "blob", // Treat the response as a blob
+          responseType: "blob",
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
 
-      console.log(response.data);
       const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `${file.name.split(".")[0]}.pdf`); // Correct filename
+      link.setAttribute("download", `${file.name.split(".")[0]}.pdf`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

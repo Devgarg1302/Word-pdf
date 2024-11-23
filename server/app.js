@@ -62,76 +62,62 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
     
     const file = readFileSync(req.file.path);
     
-//     const passwordEnabled = req.body.password === "true";
-//     const password = req.body.passwordValue;
+    const passwordEnabled = req.body.password === "true";
+    const password = req.body.passwordValue;
 
     const outputPath = join(__dirname, "uploads", `${req.file.filename}.pdf`);
-    // const protectedPath = join(__dirname, "uploads", `${req.file.filename}-protected.pdf`);
+    const protectedPath = join(__dirname, "uploads", `${req.file.filename}-protected.pdf`);
 
     libre.convert(file, ".pdf", undefined, (err, done) => {
       if (err) {
-        unlinkSync(req.file.path);
         return res.status(500).json(err.message);
       }
-      // writeFileSync(outputPath, done);
-      console.log("Conversion successful, sending file to client...");
 
-      res.setHeader("Content-Type", "application/pdf");
-      res.setHeader(
-        "Content-Disposition",
-        `attachment; filename="${req.file.originalname.split(".")[0]}.pdf"`
-      );
-      console.log(done);
-      res.send(done);
+      if (passwordEnabled === true) {
 
-      // Set the response headers to return a file directly
-      // res.set({
-      //   "Content-Type": "application/pdf",
-      //   "Content-Disposition": `inline; filename="${req.file.originalname.split(".")[0]}.pdf"`,
-      // });
-      
-      
-      // res.send(done);
-      
-      // Clean up temporary files
-//       unlinkSync(req.file.path);
-      
-      // if (passwordEnabled === true) {
+        const doc = new PDFDocument({
+          userPassword: password,
+          permissions: {
+            printing: 'highResolution',
+            modifying: false,
+          }
+        });
+        console.log("Conversion successful, sending file to client...");
 
-      //   const doc = new PDFDocument({
-      //     userPassword: password,
-      //     permissions: {
-      //       printing: 'highResolution',
-      //       modifying: false,
-      //     }
-      //   });
-        
-      //   const writeStream = createWriteStream(protectedPath);
-      //   doc.pipe(writeStream);
+        const writeStream = createWriteStream(protectedPath);
+        doc.pipe(writeStream);
 
-      //   createReadStream(outputPath).pipe(doc);
+        createReadStream(outputPath).pipe(doc);
 
-      //   doc.end();
+        doc.end();
 
-      //   writeStream.on('finish', () => {
-      //   res.download(protectedPath, () => {
-      //     unlinkSync(req.file.path);
-      //     unlinkSync(outputPath);
-      //     unlinkSync(protectedPath);
-      //   });
-      // });
+        writeStream.on('finish', () => {
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename="${req.file.originalname.split(".")[0]}.pdf"`
+        );
+        res.send(done);
+        unlinkSync(req.file.path);
+        unlinkSync(outputPath);
+        unlinkSync(protectedPath);
+        });
 
-      //   writeStream.on('error', (writeErr) => {
-      //     console.error(`Error writing protected PDF: ${writeErr}`);
-      //     res.status(500).send('PDF protection error');
-      //   });
-      // } else {
-        // res.download(outputPath, () => {
-        //   unlinkSync(req.file.path);
-        //   unlinkSync(outputPath);
-        // });
-      
-      // }
+        writeStream.on('error', (writeErr) => {
+          console.error(`Error writing protected PDF: ${writeErr}`);
+          res.status(500).send('PDF protection error');
+        });
+      } else {
+       res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename="${req.file.originalname.split(".")[0]}.pdf"`
+        );
+        res.send(done);
+        unlinkSync(req.file.path);
+        unlinkSync(outputPath);
+        unlinkSync(protectedPath);
+      }
     });
 
   } catch (error) {
