@@ -1,7 +1,7 @@
 import express from "express";
 import multer, { diskStorage } from "multer";
 import cors from "cors";
-import { unlinkSync, readFileSync, writeFileSync } from "fs";
+import { unlinkSync, readFileSync, writeFileSync, unlink } from "fs";
 import { join } from "path";
 import bodyParser from 'body-parser';
 import path from "path";
@@ -61,6 +61,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
     
 
     libre.convert(file, ".pdf", undefined, (err, done) => {
+      unlinkSync(req.file.path);
       if (err) {
         return res.status(500).json(err);
         
