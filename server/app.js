@@ -61,7 +61,6 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
     
 
     libre.convert(file, ".pdf", undefined, (err, done) => {
-      unlinkSync(req.file.path);
       if (err) {
         return res.status(500).json(err);
         
