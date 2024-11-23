@@ -93,20 +93,20 @@ const FileUpload = () => {
 
       const response = await axios.post(
         "https://rune-dashing-switch.glitch.me/convertFile",
-        formData,
-        {
-          responseType: "blob",
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        formData
+        // {
+        //   responseType: "blob",
+        //   headers: { "Content-Type": "multipart/form-data" },
+        // }
       );
   
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `${file.name.split(".")[0]}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // const url = window.URL.createObjectURL(new Blob([response.data]));
+      // const link = document.createElement("a");
+      // link.href = url;
+      // link.setAttribute("download", `${file.name.split(".")[0]}.pdf`);
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
     } catch (err) {
       console.error("Error uploading file:", err.response?.data || err.message);
       alert("Failed to upload and convert the file.");
