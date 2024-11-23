@@ -1,23 +1,25 @@
-# Use the pre-built linuxserver/libreoffice image
-FROM linuxserver/libreoffice:latest
+# Use an official Debian-based Node.js image
+FROM node:16-bullseye
 
-# Set up the working directory for your app
+# Update and install LibreOffice along with its dependencies
+RUN apt-get update && apt-get install -y \
+    libreoffice \
+    fonts-dejavu-core \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory for the application
 WORKDIR /app
 
-# Install Node.js and npm
-RUN apk add --no-cache \
-    nodejs \
-    npm
-
-# Copy package.json and install dependencies
-COPY package.json .
+# Copy package.json and install Node.js dependencies
+COPY package.json package-lock.json ./
 RUN npm install
 
-# Copy the rest of your application files into the container
+# Copy application files
 COPY . .
 
-# Expose the port your app will be running on
+# Expose the port your application will use
 EXPOSE 3000
 
-# Set the start command for the application
+# Start the Node.js application
 CMD ["node", "app.js"]
