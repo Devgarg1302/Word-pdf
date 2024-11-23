@@ -47,8 +47,8 @@ app.get("/",(req,res)=>{
 app.use((req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',
-    "connect-src 'self' https://word-pdf-fhb3.onrender.com/ https://word-pdf-fhb3.onrender.com/convertFile; script-src 'self' https://word-pdf-fhb3.onrender.com/ https://word-pdf-fhb3.onrender.com/convertFile;",
-    "script-src 'self' https://vercel.live https://vercel.live/_next-live/feedback/feedback.js 'self';"
+    "connect-src 'self' https://word-pdf-v08j.onrender.com https://word-pdf-v08j.onrender.com/convertFile; script-src 'self' https://word-pdf-v08j.onrender.com https://word-pdf-v08j.onrender.com/convertFile;",
+    "script-src-elem 'self' https://vercel.live https://vercel.live/_next-live/feedback/feedback.js 'self';"
   );
   next();
 });
