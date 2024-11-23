@@ -79,7 +79,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         res.send(err.message);
       }
 
-      if (passwordEnabled) {
+      if (passwordEnabled ==) {
 
         const doc = new PDFDocument({
           userPassword: password,
