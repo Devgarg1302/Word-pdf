@@ -14,69 +14,81 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-const allowedOrigins = ['https://word-pdf.vercel.app'];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (allowedOrigins.includes(origin) || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: "https://word-pdf.vercel.app",
+    methods: ["GET", "POST", "PUT"],
+    allowedHeaders: ["Content-Type"],
   })
 );
-
-
-app.use((req, res, next) => {
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; connect-src 'self' https://rune-dashing-switch.glitch.me; script-src 'self'; style-src 'self';"
-  );
-  next();
-});
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-const storage = diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "uploads");
+    cb(null, uploadPath);
   },
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     cb(null, file.originalname);
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-app.post("/",(req,res)=>{
+app.get("/",(req,res)=>{
   res.send("Hello World");
 });
+
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "connect-src 'self' https://rune-dashing-switch.glitch.me https://rune-dashing-switch.glitch.me/convertFile; script-src 'self' https://rune-dashing-switch.glitch.me https://rune-dashing-switch.glitch.me/convertFile;",
+    "script-src 'self' https://vercel.live https://vercel.live/_next-live/feedback/feedback.js 'self';"
+  );
+  next();
+});
+
 
 app.post("/convertFile", upload.single("file"), async (req, res, next) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
-
+    
+    console.log(JSON.stringify(req.file));
+    
     const file = readFileSync(req.file.path);
-
-    const passwordEnabled = req.body.password === "true";
-    const password = req.body.passwordValue;
+    
+//     const passwordEnabled = req.body.password === "true";
+//     const password = req.body.passwordValue;
 
     const outputPath = join(__dirname, "uploads", `${req.file.filename}.pdf`);
-    const protectedPath = join(__dirname, "uploads", `${req.file.filename}-protected.pdf`);
+    // const protectedPath = join(__dirname, "uploads", `${req.file.filename}-protected.pdf`);
 
     libre.convert(file, ".pdf", undefined, (err, done) => {
       if (err) {
         unlinkSync(req.file.path);
-        return res.status(500).json({ message: "Error converting DOCX to PDF" });
+        return res.status(500).json(err.message);
       }
       writeFileSync(outputPath, done);
+      console.log("Conversion successful, sending file to client...");
+
+      // Set the response headers to return a file directly
+      res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `inline; filename="${req.file.originalname.split(".")[0]}.pdf"`,
+      });
+      
+      
+      res.send(done);
+      
+      // Clean up temporary files
+//       unlinkSync(req.file.path);
       
       // if (passwordEnabled === true) {
 
@@ -108,17 +120,18 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
       //     res.status(500).send('PDF protection error');
       //   });
       // } else {
-        res.download(outputPath, () => {
-          unlinkSync(req.file.path);
-          unlinkSync(outputPath);
-        });
+        // res.download(outputPath, () => {
+        //   unlinkSync(req.file.path);
+        //   unlinkSync(outputPath);
+        // });
+      
       // }
     });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.send(error);
   }
+  
 });
 
 
