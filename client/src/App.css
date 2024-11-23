@@ -1,0 +1,144 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* App Container */
+#root {
+  width: 100%;
+  max-width: 600px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #444;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.desc{
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+label {
+  display: block;
+  font-size: 1rem;
+  margin: 10px 0;
+  color: #555;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Buttons */
+button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Download Link */
+a {
+  text-decoration: none;
+}
+
+a button {
+  background-color: #007bff;
+  margin-top: 20px;
+}
+
+a button:hover {
+  background-color: #0056b3;
+}
+
+.hidden{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: #f3f4f6;
+  color: #374151;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  border: 1px solid #93c5fd;
+  transition: background-color 0.3s, color 0.3s;
+  margin-top: 0;
+  margin-bottom: 30px;
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+  color: #555;
+}
+
+.hidden:hover
+{
+  background-color: #4caf50;
+  color: white;
+}
+
+.inp{
+  visibility: hidden;
+}
+
+.icon{
+  font-size: 1.875rem;
+  margin-right: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  input[type="file"] {
+    font-size: 0.9rem;
+  }
+}
