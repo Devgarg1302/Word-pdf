@@ -79,7 +79,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         res.send(err.message);
       }
 
-      if (passwordEnabled ==) {
+      if (passwordEnabled) {
 
         const doc = new PDFDocument({
           userPassword: password,
@@ -106,7 +106,6 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
           );
 
           res.sendFile(protectedPath, () => {
-            unlinkSync(outputPath);
             unlinkSync(protectedPath);
           });
         });
@@ -123,7 +122,6 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         );
 
         res.send(done);
-        unlinkSync(outputPath);
       }
     });
 
