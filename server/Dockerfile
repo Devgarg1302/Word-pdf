@@ -1,20 +1,23 @@
-# Backend Dockerfile
-FROM node:18
+# Use the pre-built linuxserver/libreoffice image
+FROM linuxserver/libreoffice:latest
 
-FROM linuxserver/libreoffice
-
-# Set working directory
+# Set up the working directory for your app
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY package*.json ./
+# Install Node.js and npm
+RUN apk add --no-cache \
+    nodejs \
+    npm
+
+# Copy package.json and install dependencies
+COPY package.json .
 RUN npm install
 
-# Copy application code
+# Copy the rest of your application files into the container
 COPY . .
 
-# Expose the backend port
+# Expose the port your app will be running on
 EXPOSE 3000
 
-# Command to run the application
+# Set the start command for the application
 CMD ["node", "app.js"]
