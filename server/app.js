@@ -28,6 +28,16 @@ app.use(
   })
 );
 
+
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; connect-src 'self' https://rune-dashing-switch.glitch.me; script-src 'self'; style-src 'self';"
+  );
+  next();
+});
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
