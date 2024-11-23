@@ -91,7 +91,7 @@ const FileUpload = () => {
 
     try {
 
-      const response = await axios.post(
+      const response = await axios.get(
         "https://rune-dashing-switch.glitch.me/convertFile",
         formData,
         {
