@@ -65,8 +65,6 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         return res.status(500).json(err);
         
       }
-      writeFileSync(outputPath, done);
-
 
       if (passwordEnabled) {
         
@@ -81,7 +79,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         });
         console.log("Conversion successful, sending file to client...");
 
-        doc.pipe(createWriteStream(outputPath));
+        doc.pipe(createWriteStream(done));
         doc.pipe(res);
 
         doc.end();
