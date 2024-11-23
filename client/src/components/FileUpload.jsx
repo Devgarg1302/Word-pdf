@@ -90,7 +90,7 @@ const FileUpload = () => {
     formData.append("passwordValue", passwordValue);
 
     try {
-      const response = await axios.post("https://word-pdf-zvlc.onrender.com/convertFile", formData, {
+      const response = await axios.post("https://word-pdf-g9ko.vercel.app/convertFile", formData, {
         responseType: "blob", 
         headers: { "Content-Type": "multipart/form-data" },
       });
