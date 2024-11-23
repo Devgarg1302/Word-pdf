@@ -1,25 +1,25 @@
-# Use an official Debian-based Node.js image
-FROM node:16-bullseye
+# Step 1: Use an official Node.js image as the base
+FROM node:18-slim
 
-# Update and install LibreOffice along with its dependencies
+# Step 2: Install LibreOffice Converter dependencies
 RUN apt-get update && apt-get install -y \
     libreoffice \
-    fonts-dejavu-core \
-    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory for the application
+# Step 3: Set working directory in the container
 WORKDIR /app
 
-# Copy package.json and install Node.js dependencies
-COPY package.json package-lock.json ./
+# Step 4: Copy package.json and package-lock.json (if available)
+COPY package*.json ./
+
+# Step 5: Install Node.js dependencies
 RUN npm install
 
-# Copy application files
+# Step 6: Copy the rest of the application code
 COPY . .
 
-# Expose the port your application will use
+# Step 7: Expose the port your app runs on (if it's a web app, for example)
 EXPOSE 3000
 
-# Start the Node.js application
+# Step 8: Run the Node.js application
 CMD ["node", "app.js"]
