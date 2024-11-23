@@ -61,18 +61,23 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
     }
     
     const file = readFileSync(req.file.path);
-    console.log(req.body)
+    
     const passwordEnabled = req.body.password === "true";
     const password = req.body.passwordValue;
-
+    
     const outputPath = join(__dirname, "uploads", `${req.file.filename}.pdf`);
-    const protectedPath = join(__dirname, "uploads", `${req.file.filename}-protected.pdf`);
+    const protectedPath = join(
+      __dirname,
+      "uploads",
+      `${req.file.filename}-protected.pdf`
+    );
 
     libre.convert(file, ".pdf", undefined, (err, done) => {
+      unlinkSync(req.file.path);
       if (err) {
         return res.status(500).json(err.message);
       }
-      writeFileSync(outputPath, done);
+     
 
       if (passwordEnabled === true) {
 
@@ -90,20 +95,20 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         const writeStream = createWriteStream(protectedPath);
         doc.pipe(writeStream);
 
-        createReadStream(outputPath).pipe(doc);
+        doc.end(done);
 
-        doc.end();
 
-        writeStream.on('finish', () => {
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader(
-          "Content-Disposition",
-          `attachment; filename="${protectedPath}"`
-        );
-        res.send(done);
-        unlinkSync(req.file.path);
-        unlinkSync(outputPath);
-        unlinkSync(protectedPath);
+        writeStream.on("finish", () => {
+          res.setHeader("Content-Type", "application/pdf");
+          res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${req.file.originalname.split(".")[0]}-protected.pdf"`
+          );
+
+          res.sendFile(protectedPath, () => {
+            unlinkSync(outputPath);
+            unlinkSync(protectedPath);
+          });
         });
 
         writeStream.on('error', (writeErr) => {
@@ -111,15 +116,14 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
           res.status(500).send('PDF protection error');
         });
       } else {
-       res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
           "Content-Disposition",
-          `attachment; filename="${outputPath}"`
+          `attachment; filename="${req.file.originalname.split(".")[0]}.pdf"`
         );
-        res.send(done);
-        unlinkSync(req.file.path);
+
+        res.send(convertedBuffer);
         unlinkSync(outputPath);
-        unlinkSync(protectedPath);
       }
     });
 
