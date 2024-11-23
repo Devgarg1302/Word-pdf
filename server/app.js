@@ -61,15 +61,16 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
     
 
     libre.convert(file, ".pdf", undefined, (err, done) => {
+      unlinkSync(req.file.path);
       if (err) {
         return res.status(500).json(err);
         
       }
       writeFileSync(outputPath, done);
 
-      if (passwordEnabled) {
-        const protectedPath = join("uploads", `${req.file.filename.split(".")[0]}-protected.pdf`);
 
+      if (passwordEnabled) {
+        
         const doc = new PDFDocument({
           userPassword: password,
           ownerPassword: password,
@@ -81,22 +82,12 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         });
         console.log("Conversion successful, sending file to client...");
 
-        const writeStream = createWriteStream(protectedPath);
-        doc.pipe(writeStream);
+        doc.pipe(createWriteStream(outputPath));
+        doc.pipe(res);
 
-        const content = done.toString("utf-8");
-        doc.text(content);
         doc.end();
 
-        writeStream.on("finish", () => {
-          res.setHeader("Content-Type", "application/pdf");
-          res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="${req.file.originalname.split(".")[0]}-protected.pdf"`
-          );
-          res.send(readFileSync(protectedPath));
-          unlinkSync(protectedPath);
-        });
+
       } else {
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
