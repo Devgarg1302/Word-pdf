@@ -79,13 +79,13 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
       console.log("Conversion successful, sending file to client...");
 
       // Set the response headers to return a file directly
-      res.set({
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `inline; filename="${req.file.originalname.split(".")[0]}.pdf"`,
-      });
+      // res.set({
+      //   "Content-Type": "application/pdf",
+      //   "Content-Disposition": `inline; filename="${req.file.originalname.split(".")[0]}.pdf"`,
+      // });
       
       
-      res.send(done);
+      // res.send(done);
       
       // Clean up temporary files
 //       unlinkSync(req.file.path);
@@ -120,10 +120,10 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
       //     res.status(500).send('PDF protection error');
       //   });
       // } else {
-        // res.download(outputPath, () => {
-        //   unlinkSync(req.file.path);
-        //   unlinkSync(outputPath);
-        // });
+        res.download(outputPath, () => {
+          unlinkSync(req.file.path);
+          unlinkSync(outputPath);
+        });
       
       // }
     });
