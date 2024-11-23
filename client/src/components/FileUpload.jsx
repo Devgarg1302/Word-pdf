@@ -92,7 +92,7 @@ const FileUpload = () => {
     try {
 
       const response = await axios.post(
-        "https://rune-dashing-switch.glitch.me:3000/convertFile",
+        "https://rune-dashing-switch.glitch.me/convertFile",
         formData,
         {
           responseType: "blob",
