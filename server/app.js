@@ -78,9 +78,11 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
 
         const doc = new PDFDocument({
           userPassword: password,
+          ownerPassword: password,
           permissions: {
             printing: 'highResolution',
             modifying: false,
+            copying: false,
           }
         });
         console.log("Conversion successful, sending file to client...");
