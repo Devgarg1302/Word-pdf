@@ -1,6 +1,6 @@
 import express from "express";
 import multer, { diskStorage } from "multer";
-import pkg from "cors";
+import cors from "cors";
 import { unlinkSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import bodyParser from 'body-parser';
@@ -14,10 +14,19 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(pkg({
-  origin: 'https://word-pdf.vercel.app/',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  
-}));
+const allowedOrigins = ['https://word-pdf.vercel.app'];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  })
+);
 
 
 const __filename = fileURLToPath(import.meta.url);
