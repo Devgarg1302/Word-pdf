@@ -58,21 +58,19 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
     const password = req.body.passwordValue;
     
     const outputPath = join(__dirname, "uploads", `${req.file.filename}.pdf`);
-    const protectedPath = join(
-      __dirname,
-      "uploads",
-      `${req.file.filename}-protected.pdf`
-    );
+    
 
     libre.convert(file, ".pdf", undefined, (err, done) => {
-      unlinkSync(req.file.path);
       if (err) {
-        // return res.status(500).json(err.message);
-        res.send(err.message);
+        return res.status(500).json(err);
+        
       }
+      writeFileSync(outputPath, done);
+
 
       if (passwordEnabled) {
-
+        const outputStream = res;
+        
         const doc = new PDFDocument({
           userPassword: password,
           ownerPassword: password,
@@ -84,28 +82,13 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         });
         console.log("Conversion successful, sending file to client...");
 
-        const writeStream = createWriteStream(protectedPath);
-        doc.pipe(writeStream);
+       
+        doc.pipe(outputStream);
 
-        doc.end(done);
+        doc.end()
 
+        unlinkSync(req.file.path);
 
-        writeStream.on("finish", () => {
-          res.setHeader("Content-Type", "application/pdf");
-          res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="${req.file.originalname.split(".")[0]}-protected.pdf"`
-          );
-
-          res.sendFile(protectedPath, () => {
-            unlinkSync(protectedPath);
-          });
-        });
-
-        writeStream.on('error', (writeErr) => {
-          console.error(`Error writing protected PDF: ${writeErr}`);
-          res.status(500).send('PDF protection error');
-        });
       } else {
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
@@ -114,6 +97,8 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         );
 
         res.send(done);
+
+        unlinkSync(req.file.path);
       }
     });
 
