@@ -93,11 +93,11 @@ const FileUpload = () => {
 
       const response = await axios.post(
         "https://word-pdf-fhb3.onrender.com/convertFile",
-        formData
-        // {
-        //   responseType: "blob",
-        //   headers: { "Content-Type": "multipart/form-data" },
-        // }
+        formData,
+        {
+          responseType: "blob",
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
 
       console.log(response.data);
