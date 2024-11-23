@@ -102,6 +102,7 @@ const FileUpload = () => {
         }
       );
 
+      console.log(response.data);
       const { downloadUrl, fileName } = response.data;
   
       const link = document.createElement("a");
@@ -151,7 +152,7 @@ const FileUpload = () => {
       </form>
 
       {loading && <p>Loading... Please wait.</p>}
-      
+
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
       {metadata.name && (

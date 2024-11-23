@@ -78,13 +78,12 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
       // writeFileSync(outputPath, done);
       console.log("Conversion successful, sending file to client...");
 
-      const pdfBuffer = done;
-
-      const base64Pdf = pdfBuffer.toString("base64");
-      res.json({
-        downloadUrl: `data:application/pdf;base64,${base64Pdf}`,
-        fileName: `${req.file.originalname.split(".")[0]}.pdf`,
-      });
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${req.file.originalname.split(".")[0]}.pdf"`
+      );
+      res.send(done);
 
       // Set the response headers to return a file directly
       // res.set({
