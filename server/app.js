@@ -60,8 +60,6 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
     
-    console.log(JSON.stringify(req.file));
-    
     const file = readFileSync(req.file.path);
     
 //     const passwordEnabled = req.body.password === "true";
