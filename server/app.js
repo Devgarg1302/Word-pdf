@@ -87,7 +87,6 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
 
         doc.end()
 
-        unlinkSync(req.file.path);
 
       } else {
         res.setHeader("Content-Type", "application/pdf");
@@ -98,7 +97,6 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
 
         res.send(done);
 
-        unlinkSync(req.file.path);
       }
     });
 
