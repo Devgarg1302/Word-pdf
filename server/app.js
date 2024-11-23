@@ -15,7 +15,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(pkg({
-  origin: '*',
+  origin: 'https://word-pdf.vercel.app/',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],  
 }));
 
