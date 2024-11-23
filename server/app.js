@@ -72,6 +72,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
       if (err) {
         return res.status(500).json(err.message);
       }
+      writeFileSync(outputPath, done);
 
       if (passwordEnabled === true) {
 
@@ -95,7 +96,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
           "Content-Disposition",
-          `attachment; filename="${req.file.originalname.split(".")[0]}.pdf"`
+          `attachment; filename="${protectedPath}"`
         );
         res.send(done);
         unlinkSync(req.file.path);
@@ -111,7 +112,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
        res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
           "Content-Disposition",
-          `attachment; filename="${req.file.originalname.split(".")[0]}.pdf"`
+          `attachment; filename="${outputPath}"`
         );
         res.send(done);
         unlinkSync(req.file.path);
