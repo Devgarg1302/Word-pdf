@@ -47,7 +47,7 @@ app.get("/",(req,res)=>{
 app.use((req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',
-    "connect-src 'self' https://rune-dashing-switch.glitch.me https://rune-dashing-switch.glitch.me/convertFile; script-src 'self' https://rune-dashing-switch.glitch.me https://rune-dashing-switch.glitch.me/convertFile;",
+    "connect-src 'self' https://word-pdf-fhb3.onrender.com/ https://word-pdf-fhb3.onrender.com/convertFile; script-src 'self' https://word-pdf-fhb3.onrender.com/ https://word-pdf-fhb3.onrender.com/convertFile;",
     "script-src 'self' https://vercel.live https://vercel.live/_next-live/feedback/feedback.js 'self';"
   );
   next();
