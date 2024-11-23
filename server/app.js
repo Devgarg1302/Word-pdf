@@ -67,10 +67,9 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
       }
       writeFileSync(outputPath, done);
 
-
       if (passwordEnabled) {
-        const outputStream = res;
-        
+        const protectedPath = join("uploads", `${req.file.filename.split(".")[0]}-protected.pdf`);
+
         const doc = new PDFDocument({
           userPassword: password,
           ownerPassword: password,
@@ -82,12 +81,22 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         });
         console.log("Conversion successful, sending file to client...");
 
-       
-        doc.pipe(outputStream);
+        const writeStream = createWriteStream(protectedPath);
+        doc.pipe(writeStream);
 
-        doc.end()
+        const content = done.toString("utf-8");
+        doc.text(content);
+        doc.end();
 
-
+        writeStream.on("finish", () => {
+          res.setHeader("Content-Type", "application/pdf");
+          res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${req.file.originalname.split(".")[0]}-protected.pdf"`
+          );
+          res.send(readFileSync(protectedPath));
+          unlinkSync(protectedPath);
+        });
       } else {
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
