@@ -61,7 +61,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
     }
     
     const file = readFileSync(req.file.path);
-    
+    console.log(req.body)
     const passwordEnabled = req.body.password === "true";
     const password = req.body.passwordValue;
 
