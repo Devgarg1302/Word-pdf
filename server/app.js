@@ -129,7 +129,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
     });
 
   } catch (error) {
-    res.send(error);
+    res.send(error.message);
   }
   
 });
