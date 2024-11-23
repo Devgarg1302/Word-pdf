@@ -83,6 +83,7 @@ app.post("/convertFile", upload.single("file"), async (req, res, next) => {
         "Content-Disposition",
         `attachment; filename="${req.file.originalname.split(".")[0]}.pdf"`
       );
+      console.log(done);
       res.send(done);
 
       // Set the response headers to return a file directly
